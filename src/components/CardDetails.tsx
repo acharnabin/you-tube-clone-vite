@@ -50,4 +50,16 @@ const CardDetails:React.FC<ICardDetailsProps> = ({id}) => {
   );
 };
 
+export const HOC=({children}:{children:React.ReactNode})=>{
+
+  return <div>
+
+    under hoc 
+
+    <>
+    {children}
+    </>
+  </div>
+}
+
 export default CardDetails;

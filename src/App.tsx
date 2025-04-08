@@ -3,7 +3,7 @@ import "./App.css";
 import Header from "./components/Header";
 // import Card from "./components/Card";
 import Sidebar from "./components/Sidebar";
-import CardDetails from "./components/CardDetails";
+import CardDetails, { HOC } from "./components/CardDetails";
 import { TProductResponse } from "./typescript/product.interfaces";
 import AxiosInstance from "./axios-instance/axiosInstance";
 import { endpoints } from "./axios-instance/endpoints";
@@ -34,6 +34,9 @@ function App() {
         <Sidebar />
 
         <div>
+          <HOC>
+          <CardDetails id={value} />
+          </HOC>
           <select
             onChange={handleOnChange}
             value={value}
@@ -46,7 +49,7 @@ function App() {
 
           <h1 className="text-8xl text-amber-50">{value}</h1>
 
-          <CardDetails id={value} />
+          
         </div>
 
         {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
