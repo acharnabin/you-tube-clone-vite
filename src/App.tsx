@@ -1,34 +1,26 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
-import axios from "axios";
-import { API_URL } from "./constants";
-import Card from "./components/Card";
+// import Card from "./components/Card";
 import Sidebar from "./components/Sidebar";
-
-type TProductResponse = IProductObj[];
-
-interface IProductObj {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-  rating: Rating;
-}
-
-interface Rating {
-  rate: number;
-  count: number;
-}
+import CardDetails from "./components/CardDetails";
+import { TProductResponse } from "./typescript/product.interfaces";
+import AxiosInstance from "./axios-instance/axiosInstance";
+import { endpoints } from "./axios-instance/endpoints";
 
 function App() {
   const [products, setProducts] = useState<TProductResponse>([]);
+  const [value, setValue] = useState<number>(2);
+
+  const handleOnChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
+    setValue(Number(e.target.value))
+  };
 
   const fetchApi = async () => {
-    const res = await axios.get(API_URL);
+    
+    const res = await AxiosInstance.get(endpoints.product.list);
     setProducts(res.data);
+    
   };
 
   useEffect(() => {
@@ -39,9 +31,25 @@ function App() {
     <div className="flex flex-col  min-h-screen bg-gray-100 dark:bg-gray-900">
       <Header />
       <div className="flex  gap-2 flex-row">
-      <Sidebar  />
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+        <Sidebar />
+
+        <div>
+          <select
+            onChange={handleOnChange}
+            value={value}
+            id="select"
+          >
+            {products.map((item) => (
+              <option value={item.id}>{item.title}</option>
+            ))}
+          </select>
+
+          <h1 className="text-8xl text-amber-50">{value}</h1>
+
+          <CardDetails id={value} />
+        </div>
+
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
           {products?.map((item) => (
             <Card
               key={item.id}
@@ -51,7 +59,7 @@ function App() {
               rating={item.rating.rate}
             />
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
