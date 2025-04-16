@@ -1,4 +1,9 @@
+:root {
+    --background:"red"
+}
 
 
 
-
+.test {
+    background-color: var(--background);
+}

@@ -1,65 +1,123 @@
-
 import React, { useEffect, useState } from "react";
 import { IProductObj } from "../typescript/product.interfaces";
-import AxiosInstance from "../axios-instance/axiosInstance";
-import { endpoints } from "../axios-instance/endpoints";
+import AxiosInstance from "../axios-instance/axiosIntance";
+import { endpoints } from "../axios-instance/endpoint";
+import { Icon } from "@iconify/react";
+import { useNavigate, useParams } from "react-router";
 
-interface ICardDetailsProps {
-    id:number
-}
 
-const CardDetails:React.FC<ICardDetailsProps> = ({id}) => {
+
+const CardDetails = () => {
   const [details, setDetails] = useState<null | IProductObj>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const Params=useParams()
+  const navigate=useNavigate()
+  const [isSuccess,setIsSucess]=useState(false)
+
+ 
 
   const fetchProductDetails = async () => {
     try {
-      const res = await AxiosInstance.get(endpoints.product.details(id));
+      setLoading(true);
+      const res = await AxiosInstance.get(endpoints.productDetails(Number(Params?.id)));
       setDetails(res.data);
-    } catch (error) {
-      console.error("Error fetching product details:", error);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching product details:", err);
+      setError("Something went wrong while loading the product.");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchProductDetails();
-    
+  }, [Params?.id]);
 
-  }, [id]);
+  if (loading) {
+    return <div className="p-8 text-center text-gray-500 text-sm">Loading product...</div>;
+  }
+
+  if (error) {
+    return <div className="p-8 text-center text-red-500 font-medium">{error}</div>;
+  }
+
+  if (!details) return null;
 
   return (
-    <div className="flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-100 rounded-lg shadow-lg max-w-2xl mx-auto">
-        <h1 className="text-8xl ">{id}</h1>
-      {/* Image Section */}
-      <div className="relative w-48 h-48 bg-gray-200 rounded-lg overflow-hidden">
-        {details?.image ? (
-          <img src={details.image} alt={details.title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">No Image</div>
-        )}
-      </div>
+    <div className="max-w-5xl mx-auto p-6 ">
 
-      {/* Content Section */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-xl font-semibold text-gray-800">{details?.title || "Loading..."}</h1>
-        <p className="text-gray-600">{details?.description || "No description available."}</p>
-        <p className="text-gray-700 font-medium">
-          Rating: <span className="font-bold">{details?.rating?.rate ?? "N/A"}</span>
-        </p>
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Image */}
+
+        <div className="bg-gray-100 flex items-center justify-center p-6">
+          <img
+            src={details.image}
+            alt={details.title}
+            className="object-contain max-h-64 w-full"
+          />
+
+{
+isSuccess?<div>dsds</div>:"fghjk"
+      }
+        </div>
+
+        {/* Content */}
+        <div className="md:col-span-2 flex flex-col justify-between p-6">
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-800">{details.title}</h2>
+              {details.category && (
+                <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full flex items-center gap-1 capitalize">
+                  <Icon icon="mdi:tag-outline" className="w-4 h-4" />
+                  {details.category}
+                </span>
+              )}
+            </div>
+
+            <p className=" text-sm leading-relaxed">
+              {details.description || "No description available."}
+            </p>
+
+            <div className="flex flex-wrap gap-4 mt-2 text-sm">
+              <div className="flex items-center gap-2 text-gray-700">
+                <Icon icon="mdi:currency-usd" className="w-5 h-5 text-green-600" />
+                <span className="font-semibold text-green-700 text-lg">${details.price}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <Icon icon="mdi:star" className="w-5 h-5 text-yellow-500" />
+                <span>{details.rating?.rate ?? "N/A"} / 5</span>
+                <span className="text-xs text-gray-400">({details.rating?.count ?? 0} reviews)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <button className="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-6 py-2 rounded-lg text-sm font-medium">
+              Buy Now
+            </button>
+            <button onClick={()=>{
+              navigate(-1)
+            }} className="bg-blue-600 hover:bg-blue-700 transition-colors text-white px-6 py-2 rounded-lg text-sm font-medium">
+              Go Back
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export const HOC=({children}:{children:React.ReactNode})=>{
-
-  return <div>
-
-    under hoc 
-
-    <>
-    {children}
-    </>
-  </div>
-}
+export const HOC = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="bg-gray-50 min-h-screen py-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-4 text-gray-700 text-lg font-semibold">Inside HOC Layout</div>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 export default CardDetails;
