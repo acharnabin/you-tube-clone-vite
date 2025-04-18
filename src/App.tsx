@@ -5,25 +5,22 @@ import { Routes } from "react-router";
 import Home from "./pages/Home";
 import CardDetails from "./components/CardDetails";
 import RootLayout from "./layout/RootLayout";
-import ProtectedLayout from "./layout/ProtectedLayout";
 import Login from "./pages/Login";
+import Users from "./pages/Users";
 
 function App() {
   return (
     <BrowserRouter>
       {/** ROUTES WILL GO HERE */}
       <Routes>
-        <Route path="login" element={<Login/>} />
+        <Route path="login" element={<Login />} />
         <Route path="products" element={<RootLayout />}>
-          <Route
-            index
-            element={
-              <ProtectedLayout>
-                <Home />
-              </ProtectedLayout>
-            }
-          />
+          <Route index element={<Home />} />
           <Route path=":id" element={<CardDetails />} />
+        </Route>
+        <Route path="users" element={<RootLayout />}>
+          <Route index element={<Users />} />
+         
         </Route>
       </Routes>
     </BrowserRouter>

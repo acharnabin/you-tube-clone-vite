@@ -8,6 +8,9 @@ export const endpoints={
     productDetails:(id:number)=>`/products/${id}`,
     auth:{
         login:'auth/login'
+    },
+    users:{
+        list:"/users"
     }
 }
 
