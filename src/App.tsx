@@ -7,12 +7,14 @@ import CardDetails from "./components/CardDetails";
 import RootLayout from "./layout/RootLayout";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
+import Test from "./pages/Test";
 
 function App() {
   return (
     <BrowserRouter>
       {/** ROUTES WILL GO HERE */}
       <Routes>
+      <Route path="test" element={<Test />} />
         <Route path="login" element={<Login />} />
         <Route path="products" element={<RootLayout />}>
           <Route index element={<Home />} />
